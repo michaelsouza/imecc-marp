@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#eef2ff"/><stop offset=".6" stop-color="#fff7ed"/><stop offset="1" stop-color="#fdf2f8"/></linearGradient>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)"><line x1="0" y1="0" x2="0" y2="8" stroke="#111827" stroke-width="1.4" opacity=".28"/></pattern>
+    <style>.ink{stroke:#111827;stroke-linecap:round;stroke-linejoin:round;fill:none}.label{font-family:"Comic Sans MS","Bradley Hand","Segoe Print",cursive;fill:#111827}</style>
+  </defs>
+  <rect x="18" y="18" width="724" height="394" rx="22" fill="url(#bg)"/>
+  <path class="ink" d="M105 348 C240 351 520 346 670 349" stroke-width="3"/>
+  <path class="ink" d="M105 348 C103 275 108 160 106 82" stroke-width="3"/>
+  <text class="label" x="258" y="62" font-size="38">Runtime Distribution</text>
+  <g stroke="#111827" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="220" y1="135" x2="220" y2="295"/><line x1="190" y1="135" x2="250" y2="135"/><line x1="190" y1="295" x2="250" y2="295"/>
+    <rect x="170" y="172" width="100" height="82" fill="#ffb4a2"/><rect x="170" y="172" width="100" height="82" fill="url(#hatch)"/><line x1="170" y1="214" x2="270" y2="214"/>
+    <line x1="380" y1="210" x2="380" y2="304"/><line x1="350" y1="210" x2="410" y2="210"/><line x1="350" y1="304" x2="410" y2="304"/>
+    <rect x="330" y="232" width="100" height="48" fill="#99f6e4"/><rect x="330" y="232" width="100" height="48" fill="url(#hatch)"/><line x1="330" y1="254" x2="430" y2="254"/>
+    <line x1="540" y1="178" x2="540" y2="286"/><line x1="510" y1="178" x2="570" y2="178"/><line x1="510" y1="286" x2="570" y2="286"/>
+    <rect x="490" y="204" width="100" height="56" fill="#bfdbfe"/><rect x="490" y="204" width="100" height="56" fill="url(#hatch)"/><line x1="490" y1="232" x2="590" y2="232"/>
+  </g>
+  <text class="label" x="205" y="382" font-size="24">BP</text>
+  <text class="label" x="358" y="382" font-size="24">SBP</text>
+  <text class="label" x="512" y="382" font-size="24">DGPw</text>
+  <text class="label" x="34" y="235" font-size="22" transform="rotate(-90 34 235)">time (s)</text>
+</svg>
+

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/>
+      <stop offset="0.6" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#fdf2f8"/>
+    </linearGradient>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#fb7185" stroke-width="2" opacity=".55"/>
+    </pattern>
+    <style>.ink{stroke:#111827;stroke-linecap:round;stroke-linejoin:round;fill:none}.label{font-family:"Comic Sans MS","Bradley Hand","Segoe Print",cursive;fill:#111827}</style>
+  </defs>
+  <rect x="18" y="18" width="724" height="394" rx="22" fill="url(#bg)"/>
+  <path class="ink" d="M105 348 C240 351 520 346 670 349" stroke-width="3"/>
+  <path class="ink" d="M105 348 C103 275 108 160 106 82" stroke-width="3"/>
+  <text class="label" x="266" y="62" font-size="38">Runtime Comparison</text>
+  <text class="label" x="27" y="235" font-size="23" transform="rotate(-90 27 235)">time (s)</text>
+  <g>
+    <path d="M175 153 L265 154 L264 348 L174 349 Z" fill="#ffb4a2" stroke="#111827" stroke-width="3"/>
+    <path d="M177 155 L263 156 L262 346 L176 347 Z" fill="url(#hatch)"/>
+    <path d="M355 230 L445 229 L447 348 L354 349 Z" fill="#99f6e4" stroke="#111827" stroke-width="3"/>
+    <path d="M357 232 L443 231 L445 346 L356 347 Z" fill="url(#hatch)"/>
+    <path d="M535 205 L625 206 L624 348 L534 349 Z" fill="#bfdbfe" stroke="#111827" stroke-width="3"/>
+    <path d="M537 207 L623 208 L622 346 L536 347 Z" fill="url(#hatch)"/>
+  </g>
+  <text class="label" x="202" y="382" font-size="24">BP</text>
+  <text class="label" x="378" y="382" font-size="24">SBP</text>
+  <text class="label" x="552" y="382" font-size="24">DGPw</text>
+  <text class="label" x="204" y="137" font-size="21">30</text>
+  <text class="label" x="384" y="214" font-size="21">18</text>
+  <text class="label" x="565" y="190" font-size="21">22</text>
+</svg>
+

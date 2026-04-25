@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Chart.xkcd examples</title>
+  <style>
+    body {
+      background: #f8faf7;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 32px;
+    }
+    .grid {
+      display: grid;
+      gap: 28px;
+      grid-template-columns: repeat(2, minmax(420px, 1fr));
+    }
+    .panel {
+      background: #ffffff;
+      border: 1px solid #d7e1db;
+      border-radius: 8px;
+      padding: 18px;
+    }
+    svg {
+      width: 100%;
+      min-height: 340px;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="panel"><svg class="bar"></svg></div>
+    <div class="panel"><svg class="line"></svg></div>
+    <div class="panel"><svg class="pie"></svg></div>
+    <div class="panel"><svg class="scatter"></svg></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.xkcd@1/dist/chart.xkcd.min.js"></script>
+  <script>
+    new chartXkcd.Bar(document.querySelector(".bar"), {
+      title: "Runtime Comparison",
+      data: {
+        labels: ["BP", "SBP", "DGPw"],
+        datasets: [{ data: [30, 18, 22] }]
+      },
+      options: {
+        yLabel: "time (s)",
+        dataColors: ["#ff6b6b", "#14b8a6", "#0ea5e9"]
+      }
+    });
+
+    new chartXkcd.Line(document.querySelector(".line"), {
+      title: "Pruning Over Iterations",
+      data: {
+        labels: ["1", "2", "3", "4", "5", "6"],
+        datasets: [
+          { label: "BP", data: [42, 31, 25, 19, 15, 12] },
+          { label: "SBP", data: [42, 28, 20, 14, 10, 8] }
+        ]
+      },
+      options: {
+        xLabel: "iteration",
+        yLabel: "active branches",
+        dataColors: ["#fb7185", "#0ea5e9"]
+      }
+    });
+
+    new chartXkcd.Pie(document.querySelector(".pie"), {
+      title: "Branch Outcomes",
+      data: {
+        labels: ["pruned", "feasible", "symmetric"],
+        datasets: [{ data: [48, 32, 20] }]
+      },
+      options: {
+        dataColors: ["#14b8a6", "#0ea5e9", "#fb7185"]
+      }
+    });
+
+    new chartXkcd.XY(document.querySelector(".scatter"), {
+      title: "Instance Size vs Runtime",
+      data: {
+        datasets: [{
+          label: "instances",
+          data: [
+            { x: 8, y: 1.5 },
+            { x: 12, y: 2.4 },
+            { x: 17, y: 3.2 },
+            { x: 22, y: 4.1 },
+            { x: 29, y: 6.2 }
+          ]
+        }]
+      },
+      options: {
+        xLabel: "number of vertices",
+        yLabel: "runtime (s)",
+        dataColors: ["#fb7185"]
+      }
+    });
+  </script>
+</body>
+</html>
+

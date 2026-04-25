@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/><stop offset=".6" stop-color="#fff7ed"/><stop offset="1" stop-color="#fdf2f8"/>
+    </linearGradient>
+    <style>.ink{stroke:#111827;stroke-linecap:round;stroke-linejoin:round;fill:none}.label{font-family:"Comic Sans MS","Bradley Hand","Segoe Print",cursive;fill:#111827}</style>
+  </defs>
+  <rect x="18" y="18" width="724" height="394" rx="22" fill="url(#bg)"/>
+  <path class="ink" d="M105 348 C240 351 520 346 670 349" stroke-width="3"/>
+  <path class="ink" d="M105 348 C103 275 108 160 106 82" stroke-width="3"/>
+  <text class="label" x="260" y="62" font-size="38">Pruning Over Iterations</text>
+  <path d="M120 104 C190 165 252 211 320 236 C412 269 505 289 632 303" fill="none" stroke="#fb7185" stroke-width="4" stroke-linecap="round"/>
+  <path d="M121 107 C192 167 253 213 321 238 C414 272 506 291 633 305" fill="none" stroke="#fb7185" stroke-width="1.6" stroke-linecap="round" opacity=".65"/>
+  <path d="M120 104 C190 176 252 238 320 267 C412 300 505 318 632 325" fill="none" stroke="#0ea5e9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M121 107 C192 178 253 240 321 269 C414 302 506 320 633 327" fill="none" stroke="#0ea5e9" stroke-width="1.6" stroke-linecap="round" opacity=".65"/>
+  <g fill="#fb7185" stroke="#111827" stroke-width="2">
+    <circle cx="120" cy="104" r="8"/><circle cx="320" cy="236" r="8"/><circle cx="632" cy="303" r="8"/>
+  </g>
+  <g fill="#0ea5e9" stroke="#111827" stroke-width="2">
+    <rect x="112" y="96" width="16" height="16" rx="3"/><rect x="312" y="259" width="16" height="16" rx="3"/><rect x="624" y="317" width="16" height="16" rx="3"/>
+  </g>
+  <rect x="505" y="82" width="24" height="12" fill="#fb7185"/><text class="label" x="540" y="96" font-size="20">BP</text>
+  <rect x="505" y="112" width="24" height="12" fill="#0ea5e9"/><text class="label" x="540" y="126" font-size="20">SBP</text>
+</svg>
+

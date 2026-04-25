@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/>
+      <stop offset="0.58" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#fdf2f8"/>
+    </linearGradient>
+    <pattern id="simplexHatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#0f766e" stroke-width="2" opacity=".38"/>
+    </pattern>
+    <style>
+      .ink { stroke:#111827; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .soft { stroke:#111827; stroke-linecap:round; stroke-linejoin:round; fill:none; opacity:.58; }
+      .label { font-family:"Comic Sans MS","Bradley Hand","Segoe Print",cursive; fill:#111827; }
+    </style>
+  </defs>
+  <rect x="18" y="18" width="724" height="394" rx="24" fill="url(#bg)"/>
+  <text class="label" x="246" y="66" font-size="40">manual SVG simplex</text>
+  <path d="M222 306 L381 116 L545 305 Z" fill="#ccfbf1" stroke="#0f766e" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M226 307 L382 119 L542 303 Z" fill="url(#simplexHatch)" opacity=".95"/>
+  <path class="ink" d="M222 306 C275 238 326 175 381 116" stroke-width="3.2"/>
+  <path class="soft" d="M225 309 C278 241 329 178 384 119" stroke-width="1.4"/>
+  <path class="ink" d="M381 116 C433 174 492 238 545 305" stroke-width="3.2"/>
+  <path class="soft" d="M379 119 C431 177 490 241 543 308" stroke-width="1.4"/>
+  <path class="ink" d="M222 306 C321 301 443 309 545 305" stroke-width="3.2"/>
+  <path class="soft" d="M223 309 C322 304 444 312 546 308" stroke-width="1.4"/>
+  <g stroke="#111827" stroke-width="3">
+    <circle cx="222" cy="306" r="28" fill="#99f6e4"/>
+    <circle cx="381" cy="116" r="28" fill="#99f6e4"/>
+    <circle cx="545" cy="305" r="28" fill="#99f6e4"/>
+  </g>
+  <text class="label" x="208" y="315" font-size="24">v1</text>
+  <text class="label" x="367" y="125" font-size="24">v2</text>
+  <text class="label" x="531" y="314" font-size="24">v3</text>
+  <path class="ink" d="M382 330 C416 362 467 361 508 330" stroke="#e11d48" stroke-width="3"/>
+  <path class="soft" d="M384 333 C418 365 469 364 510 333" stroke="#e11d48" stroke-width="1.4"/>
+  <text class="label" x="398" y="384" font-size="22" fill="#be123c">nondegenerate simplex</text>
+</svg>

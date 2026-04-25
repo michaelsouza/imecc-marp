@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/>
+      <stop offset="0.58" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#fdf2f8"/>
+    </linearGradient>
+    <pattern id="greenHatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
+      <line x1="0" y1="0" x2="0" y2="9" stroke="#14b8a6" stroke-width="2" opacity="0.55"/>
+    </pattern>
+    <pattern id="roseHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-25)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#fb7185" stroke-width="2" opacity="0.65"/>
+    </pattern>
+    <style>
+      .ink { stroke:#111827; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .guide { stroke:#6b7280; stroke-width:2; stroke-dasharray:8 8; stroke-linecap:round; fill:none; opacity:.8; }
+      .label { font-family:"Comic Sans MS","Bradley Hand","Segoe Print",cursive; fill:#111827; }
+    </style>
+  </defs>
+  <rect x="24" y="24" width="852" height="472" rx="26" fill="url(#bg)"/>
+  <path class="ink" d="M119 371 C225 368 546 373 760 369" stroke-width="3"/>
+  <path class="ink" d="M122 371 C118 289 123 176 121 91" stroke-width="3"/>
+  <path d="M260 320 L430 318 L345 171 Z" fill="#ccfbf1" stroke="#0f766e" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M264 323 L427 321 L347 174 Z" fill="url(#greenHatch)" opacity=".9"/>
+  <path class="guide" d="M260 320 C370 270 494 235 615 205"/>
+  <path class="guide" d="M430 318 C490 274 555 235 615 205"/>
+  <path class="guide" d="M345 171 C435 182 520 190 615 205"/>
+  <path class="guide" d="M260 320 C364 365 495 405 615 435"/>
+  <path class="guide" d="M430 318 C488 355 552 397 615 435"/>
+  <path class="guide" d="M345 171 C440 265 535 349 615 435"/>
+  <g>
+    <circle cx="260" cy="320" r="24" fill="#99f6e4" stroke="#111827" stroke-width="3"/>
+    <circle cx="430" cy="320" r="24" fill="#99f6e4" stroke="#111827" stroke-width="3"/>
+    <circle cx="345" cy="170" r="24" fill="#99f6e4" stroke="#111827" stroke-width="3"/>
+    <circle cx="615" cy="205" r="29" fill="#fecdd3" stroke="#e11d48" stroke-width="3"/>
+    <circle cx="615" cy="435" r="29" fill="#fecdd3" stroke="#e11d48" stroke-width="3"/>
+    <circle cx="615" cy="205" r="25" fill="url(#roseHatch)" opacity=".7"/>
+    <circle cx="615" cy="435" r="25" fill="url(#roseHatch)" opacity=".7"/>
+  </g>
+  <text class="label" x="362" y="66" font-size="38">two feasible positions</text>
+  <text class="label" x="246" y="329" font-size="24">x1</text>
+  <text class="label" x="416" y="329" font-size="24">x2</text>
+  <text class="label" x="331" y="179" font-size="24">x3</text>
+  <text class="label" x="591" y="214" font-size="24">x4+</text>
+  <text class="label" x="591" y="444" font-size="24">x4-</text>
+  <text class="label" x="220" y="414" font-size="22" fill="#0f766e">known simplex</text>
+  <text class="label" x="539" y="122" font-size="22" fill="#be123c">candidate reflections</text>
+</svg>
+

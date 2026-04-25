@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="430" viewBox="0 0 520 430">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#eef2ff"/><stop offset=".6" stop-color="#fff7ed"/><stop offset="1" stop-color="#fdf2f8"/></linearGradient>
+    <style>.ink{stroke:#111827;stroke-linecap:round;stroke-linejoin:round}.label{font-family:"Comic Sans MS","Bradley Hand","Segoe Print",cursive;fill:#111827}</style>
+  </defs>
+  <rect x="18" y="18" width="484" height="394" rx="22" fill="url(#bg)"/>
+  <text class="label" x="145" y="62" font-size="38">Branch Outcomes</text>
+  <g transform="translate(250 220)">
+    <path d="M0 0 L0 -122 A122 122 0 0 1 15 121 Z" fill="#99f6e4" class="ink" stroke-width="3"/>
+    <path d="M0 0 L15 121 A122 122 0 0 1 -116 -38 Z" fill="#bfdbfe" class="ink" stroke-width="3"/>
+    <path d="M0 0 L-116 -38 A122 122 0 0 1 0 -122 Z" fill="#fecdd3" class="ink" stroke-width="3"/>
+  </g>
+  <text class="label" x="325" y="198" font-size="22">pruned 48%</text>
+  <text class="label" x="88" y="292" font-size="22">feasible 32%</text>
+  <text class="label" x="86" y="146" font-size="22">symmetric 20%</text>
+</svg>
+
