@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hand-Drawn LaTeX SVG</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        packages: {"[+]": ["ams", "boldsymbol", "mathtools"]},
+        inlineMath: [["$", "$"], ["\\(", "\\)"]],
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]]
+      },
+      svg: {
+        fontCache: "none"
+      },
+      startup: {
+        typeset: false
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script defer src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
+  <style>
+    :root {
+      --bg: #f8faf7;
+      --paper: #fffdfa;
+      --ink: #111827;
+      --muted: #647067;
+      --line: #d8e2dc;
+      --accent: #0f766e;
+      --accent-soft: #dff5ef;
+      --danger: #b91c1c;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+      --hand: "Comic Neue", "Comic Sans MS", "Chalkboard SE", "Marker Felt", "Segoe Print", cursive;
+      --ui: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(180, 83, 9, 0.08)),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--ui);
+      margin: 0;
+      min-height: 100vh;
+      padding: 28px;
+    }
+
+    main {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: minmax(330px, 0.82fr) minmax(430px, 1.18fr);
+      margin: 0 auto;
+      max-width: 1280px;
+    }
+
+    header {
+      grid-column: 1 / -1;
+    }
+
+    h1 {
+      font-size: clamp(32px, 4vw, 58px);
+      line-height: 1;
+      margin: 0 0 8px;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+      margin: 0;
+      max-width: 900px;
+    }
+
+    label {
+      color: var(--muted);
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    textarea,
+    input,
+    select {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      font: 18px/1.42 "JetBrains Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      outline: none;
+      padding: 12px 14px;
+      width: 100%;
+    }
+
+    textarea:focus,
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+    }
+
+    textarea {
+      min-height: 240px;
+      resize: vertical;
+    }
+
+    button {
+      align-items: center;
+      background: var(--accent);
+      border: 0;
+      border-radius: 8px;
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      font: 700 15px/1 var(--ui);
+      gap: 8px;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 15px;
+      white-space: nowrap;
+    }
+
+    button.secondary {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.55;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(216, 226, 220, 0.9);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .toolbar,
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .control-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .preview-card {
+      display: grid;
+      gap: 14px;
+      grid-template-rows: auto 1fr auto;
+      min-height: 620px;
+    }
+
+    .preview {
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(17, 24, 39, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(17, 24, 39, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 28px 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      min-height: 430px;
+      overflow: auto;
+      padding: 36px;
+    }
+
+    .preview svg {
+      display: block;
+      height: auto;
+      max-height: 360px;
+      max-width: 100%;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 15px;
+      min-height: 22px;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .examples {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .example {
+      background: var(--accent-soft);
+      border: 1px solid rgba(15, 118, 110, 0.18);
+      color: #134e4a;
+      min-height: 38px;
+      padding: 0 10px;
+    }
+
+    @media (max-width: 920px) {
+      body {
+        padding: 18px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .control-grid,
+      .examples {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Hand-Drawn LaTeX SVG</h1>
+      <p>Type a LaTeX formula, render it with MathJax, redraw the SVG with Rough.js, then copy it as SVG or PNG for Canva, Google Slides, or any slide editor.</p>
+    </header>
+
+    <section class="card stack">
+      <div>
+        <label for="latex">LaTeX input</label>
+        <textarea id="latex" spellcheck="false">\min_x \sum_{(i,j)\in E}\left(\|x_i-x_j\|^2-d_{ij}^{\,2}\right)^2</textarea>
+      </div>
+
+      <div class="control-grid">
+        <div>
+          <label for="scale">Scale</label>
+          <input id="scale" type="number" min="0.5" max="5" step="0.1" value="1.5">
+        </div>
+        <div>
+          <label for="roughness">Roughness</label>
+          <input id="roughness" type="number" min="0" max="8" step="0.1" value="2.4">
+        </div>
+        <div>
+          <label for="ink">Ink color</label>
+          <input id="ink" type="color" value="#111827">
+        </div>
+        <div>
+          <label for="fillStyle">Fill</label>
+          <select id="fillStyle">
+            <option value="hachure" selected>Hatch</option>
+            <option value="solid">Solid</option>
+            <option value="zigzag-line">Zigzag</option>
+            <option value="cross-hatch">Cross hatch</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label>Examples</label>
+        <div class="examples">
+          <button class="example" type="button" data-example="\forall \{i,j\}\in E,\quad \|x_i-x_j\|=d_{ij}">DGP constraint</button>
+          <button class="example" type="button" data-example="l_{ij}\leq \|x_i(\omega)-x_j(\omega)\|\leq u_{ij}">Interval distance</button>
+          <button class="example" type="button" data-example="v_1,v_2,\dots,v_n">Vertex order</button>
+          <button class="example" type="button" data-example="2^{|V|-k}">Search tree size</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button id="render" type="button">Render</button>
+        <button id="copySvg" class="secondary" type="button">Copy SVG</button>
+        <button id="copyPng" class="secondary" type="button">Copy PNG</button>
+        <button id="downloadSvg" class="secondary" type="button">Download SVG</button>
+        <button id="downloadPng" class="secondary" type="button">Download PNG</button>
+      </div>
+
+      <div id="status" class="status">Waiting for MathJax...</div>
+    </section>
+
+    <section class="card preview-card">
+      <label>Preview</label>
+      <div id="preview" class="preview"></div>
+      <p class="status">Tip: PNG copy is usually best for Canva. SVG copy/download is better when the target preserves vector graphics.</p>
+    </section>
+  </main>
+
+  <script>
+    const latexInput = document.getElementById("latex");
+    const scaleInput = document.getElementById("scale");
+    const roughnessInput = document.getElementById("roughness");
+    const inkInput = document.getElementById("ink");
+    const fillStyleInput = document.getElementById("fillStyle");
+    const preview = document.getElementById("preview");
+    const statusLine = document.getElementById("status");
+    const buttons = [...document.querySelectorAll("button")];
+
+    let currentSvg = "";
+    let renderTimer = 0;
+
+    function setStatus(message, isError = false) {
+      statusLine.textContent = message;
+      statusLine.classList.toggle("error", isError);
+    }
+
+    function setBusy(isBusy) {
+      buttons.forEach((button) => {
+        if (!button.classList.contains("example")) {
+          button.disabled = isBusy;
+        }
+      });
+    }
+
+    function svgLengthToPixels(value, fallback) {
+      const number = Number.parseFloat(value || "");
+      if (!Number.isFinite(number)) {
+        return fallback;
+      }
+      if (String(value).endsWith("ex")) {
+        return number * 8;
+      }
+      if (String(value).endsWith("em")) {
+        return number * 16;
+      }
+      return number;
+    }
+
+    function readNumber(input, fallback) {
+      const normalized = String(input.value || "").replace(",", ".");
+      const value = Number.parseFloat(normalized);
+      return Number.isFinite(value) ? value : fallback;
+    }
+
+    function inheritedTransform(node, root) {
+      const transforms = [];
+      let current = node;
+
+      while (current && current !== root) {
+        if (current.getAttribute && current.getAttribute("transform")) {
+          transforms.unshift(current.getAttribute("transform"));
+        }
+        current = current.parentNode;
+      }
+
+      return transforms.join(" ");
+    }
+
+    function appendRoughNode(target, roughNode, transform) {
+      if (transform) {
+        roughNode.setAttribute("transform", transform);
+      }
+      target.appendChild(roughNode);
+    }
+
+    function drawableElements(root, selector) {
+      return [...root.querySelectorAll(selector)].filter((element) => !element.closest("defs"));
+    }
+
+    function roughenMathSvg(svg, options) {
+      const parser = new DOMParser();
+      const sourceDoc = parser.parseFromString(svg, "image/svg+xml");
+      const sourceSvg = sourceDoc.documentElement;
+      const viewBox = sourceSvg.getAttribute("viewBox") || "0 0 400 120";
+      const [, , viewBoxWidth, viewBoxHeight] = viewBox.split(/\s+/).map(Number);
+      const originalWidth = svgLengthToPixels(sourceSvg.getAttribute("width"), viewBoxWidth / 70 || 400);
+      const originalHeight = svgLengthToPixels(sourceSvg.getAttribute("height"), viewBoxHeight / 70 || 120);
+      const width = Math.ceil(originalWidth * options.scale);
+      const height = Math.ceil(originalHeight * options.scale);
+      const outputSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      const roughSvg = rough.svg(outputSvg);
+      const strokeWidth = Math.max(options.roughness * 8, 7);
+      const glyphOptions = {
+        bowing: 0.9,
+        fill: options.ink,
+        fillStyle: options.fillStyle,
+        hachureGap: Math.max(strokeWidth * 1.15, 8),
+        hachureAngle: -35,
+        roughness: options.roughness,
+        stroke: options.ink,
+        strokeWidth
+      };
+      const strokeOptions = {
+        bowing: 1.4,
+        fill: "none",
+        roughness: options.roughness,
+        stroke: options.ink,
+        strokeWidth: Math.max(strokeWidth * 0.8, 6)
+      };
+
+      outputSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      outputSvg.setAttribute("width", String(width));
+      outputSvg.setAttribute("height", String(height));
+      outputSvg.setAttribute("viewBox", viewBox);
+      outputSvg.setAttribute("role", "img");
+      outputSvg.setAttribute("aria-label", "Hand-drawn LaTeX formula");
+
+      const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+      style.textContent = `
+        svg { background: transparent; }
+        path { stroke-linecap: round; stroke-linejoin: round; }
+      `;
+      outputSvg.appendChild(style);
+
+      drawableElements(sourceSvg, "path[d]").forEach((path) => {
+        const roughPath = roughSvg.path(path.getAttribute("d"), glyphOptions);
+        appendRoughNode(outputSvg, roughPath, inheritedTransform(path, sourceSvg));
+      });
+
+      drawableElements(sourceSvg, "use").forEach((use) => {
+        const href = use.getAttribute("href") || use.getAttributeNS("http://www.w3.org/1999/xlink", "href");
+        const referenced = href && href.startsWith("#") ? sourceDoc.getElementById(href.slice(1)) : null;
+        if (!referenced || referenced.nodeName.toLowerCase() !== "path") {
+          return;
+        }
+
+        const x = Number.parseFloat(use.getAttribute("x") || "0");
+        const y = Number.parseFloat(use.getAttribute("y") || "0");
+        const localTransform = [inheritedTransform(use, sourceSvg), x || y ? `translate(${x} ${y})` : ""]
+          .filter(Boolean)
+          .join(" ");
+        const roughPath = roughSvg.path(referenced.getAttribute("d"), glyphOptions);
+        appendRoughNode(outputSvg, roughPath, localTransform);
+      });
+
+      drawableElements(sourceSvg, "rect").forEach((rect) => {
+        const x = Number.parseFloat(rect.getAttribute("x") || "0");
+        const y = Number.parseFloat(rect.getAttribute("y") || "0");
+        const rectWidth = Number.parseFloat(rect.getAttribute("width") || "0");
+        const rectHeight = Number.parseFloat(rect.getAttribute("height") || "0");
+        const roughRect = roughSvg.rectangle(x, y, rectWidth, rectHeight, {
+          ...strokeOptions,
+          fill: options.ink,
+          fillStyle: "solid"
+        });
+        appendRoughNode(outputSvg, roughRect, inheritedTransform(rect, sourceSvg));
+      });
+
+      drawableElements(sourceSvg, "line").forEach((line) => {
+        const roughLine = roughSvg.line(
+          Number.parseFloat(line.getAttribute("x1") || "0"),
+          Number.parseFloat(line.getAttribute("y1") || "0"),
+          Number.parseFloat(line.getAttribute("x2") || "0"),
+          Number.parseFloat(line.getAttribute("y2") || "0"),
+          strokeOptions
+        );
+        appendRoughNode(outputSvg, roughLine, inheritedTransform(line, sourceSvg));
+      });
+
+      drawableElements(sourceSvg, "circle").forEach((circle) => {
+        const cx = Number.parseFloat(circle.getAttribute("cx") || "0");
+        const cy = Number.parseFloat(circle.getAttribute("cy") || "0");
+        const radius = Number.parseFloat(circle.getAttribute("r") || "0");
+        const roughCircle = roughSvg.circle(cx, cy, radius * 2, strokeOptions);
+        appendRoughNode(outputSvg, roughCircle, inheritedTransform(circle, sourceSvg));
+      });
+
+      drawableElements(sourceSvg, "ellipse").forEach((ellipse) => {
+        const cx = Number.parseFloat(ellipse.getAttribute("cx") || "0");
+        const cy = Number.parseFloat(ellipse.getAttribute("cy") || "0");
+        const rx = Number.parseFloat(ellipse.getAttribute("rx") || "0");
+        const ry = Number.parseFloat(ellipse.getAttribute("ry") || "0");
+        const roughEllipse = roughSvg.ellipse(cx, cy, rx * 2, ry * 2, strokeOptions);
+        appendRoughNode(outputSvg, roughEllipse, inheritedTransform(ellipse, sourceSvg));
+      });
+
+      return new XMLSerializer().serializeToString(outputSvg);
+    }
+
+    async function renderFormula() {
+      const tex = latexInput.value.trim();
+      if (!tex) {
+        preview.innerHTML = "";
+        currentSvg = "";
+        setStatus("Enter a LaTeX expression.");
+        return;
+      }
+
+      if (!window.MathJax || !MathJax.tex2svgPromise || !window.rough) {
+        setStatus("MathJax and Rough.js are still loading...", false);
+        return;
+      }
+
+      setBusy(true);
+      setStatus("Rendering...");
+
+      try {
+        const node = await MathJax.tex2svgPromise(tex, {display: true});
+        const rawSvg = node.querySelector("svg").outerHTML;
+        currentSvg = roughenMathSvg(rawSvg, {
+          scale: readNumber(scaleInput, 1.5),
+          roughness: readNumber(roughnessInput, 2.4),
+          fillStyle: fillStyleInput.value,
+          ink: inkInput.value
+        });
+        preview.innerHTML = currentSvg;
+        setStatus("Rendered. Copy or download the image.");
+      } catch (error) {
+        currentSvg = "";
+        preview.innerHTML = "";
+        setStatus(error.message || "Could not render this LaTeX expression.", true);
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function scheduleRender() {
+      window.clearTimeout(renderTimer);
+      renderTimer = window.setTimeout(renderFormula, 220);
+    }
+
+    function download(blob, filename) {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(link.href);
+    }
+
+    async function svgToPngBlob() {
+      if (!currentSvg) {
+        throw new Error("Render a formula first.");
+      }
+
+      const svgBlob = new Blob([currentSvg], {type: "image/svg+xml;charset=utf-8"});
+      const url = URL.createObjectURL(svgBlob);
+      const img = new Image();
+
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = url;
+      });
+
+      const canvas = document.createElement("canvas");
+      const padding = 32;
+      canvas.width = img.naturalWidth + padding * 2;
+      canvas.height = img.naturalHeight + padding * 2;
+
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgba(255, 255, 255, 0)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, padding, padding);
+      URL.revokeObjectURL(url);
+
+      return await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 1));
+    }
+
+    async function copySvg() {
+      if (!currentSvg) {
+        setStatus("Render a formula first.", true);
+        return;
+      }
+      await navigator.clipboard.writeText(currentSvg);
+      setStatus("SVG copied to clipboard.");
+    }
+
+    async function copyPng() {
+      try {
+        const blob = await svgToPngBlob();
+        if (!navigator.clipboard || !window.ClipboardItem) {
+          throw new Error("This browser cannot copy PNG images directly. Use Download PNG instead.");
+        }
+        await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
+        setStatus("PNG copied to clipboard.");
+      } catch (error) {
+        setStatus(error.message || "Could not copy PNG.", true);
+      }
+    }
+
+    document.getElementById("render").addEventListener("click", renderFormula);
+    document.getElementById("copySvg").addEventListener("click", copySvg);
+    document.getElementById("copyPng").addEventListener("click", copyPng);
+    document.getElementById("downloadSvg").addEventListener("click", () => {
+      if (!currentSvg) {
+        setStatus("Render a formula first.", true);
+        return;
+      }
+      download(new Blob([currentSvg], {type: "image/svg+xml;charset=utf-8"}), "hand-drawn-formula.svg");
+      setStatus("SVG downloaded.");
+    });
+    document.getElementById("downloadPng").addEventListener("click", async () => {
+      try {
+        download(await svgToPngBlob(), "hand-drawn-formula.png");
+        setStatus("PNG downloaded.");
+      } catch (error) {
+        setStatus(error.message || "Could not download PNG.", true);
+      }
+    });
+
+    document.querySelectorAll(".example").forEach((button) => {
+      button.addEventListener("click", () => {
+        latexInput.value = button.dataset.example;
+        renderFormula();
+      });
+    });
+
+    [latexInput, scaleInput, roughnessInput, inkInput, fillStyleInput].forEach((input) => {
+      input.addEventListener("input", scheduleRender);
+    });
+
+    window.addEventListener("load", () => {
+      MathJax.startup.promise.then(renderFormula);
+    });
+  </script>
+</body>
+</html>
