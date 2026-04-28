@@ -165,8 +165,7 @@ $$\varphi'(F(z)-F(z^*))\|\nabla F(z)\|\ge1$$
 
 whenever
 
-$$z\in U,\qquad
-F(z^*)<F(z)<F(z^*)+\eta.$$
+$$z\in U,\qquad F(z^*)<F(z)<F(z^*)+\eta.$$
 
 This is stated without proof (see [[1]](#ref1), [[2]](#ref2)).
 
@@ -200,8 +199,7 @@ $$F(z^*)<F(z)<F(z^*)+\eta.$$
 
 Let $a=\mu/2$ and let $b>0$ be the constant from Lemma 4, so that
 
-$$s_r-s_{r+1}\ge a\Delta_r^2,\qquad
-\|\nabla F(z^r)\|\le b\Delta_{r-1},\qquad r\ge1.$$
+$$s_r-s_{r+1}\ge a\Delta_r^2, \qquad \|\nabla F(z^r)\|\le b\Delta_{r-1},\qquad r\ge1.$$
 
 Since $z^*$ is an accumulation point, $s_r\to0$, and $\Delta_r\to0$, we may choose $N\ge1$ along a subsequence converging to $z^*$ such that
 
@@ -265,8 +263,6 @@ Thus $\{z^r\}$ is Cauchy and converges to some $\bar z$. Since the subsequence u
 $$\|\nabla F(z^r)\|\to0,$$
 
 so the limit is stationary. ∎
-
-So the proximal term gives exactly what the original cyclic method lacked: sufficient decrease proportional to the squared step. That kills Powell-type tie cycles and lets the KL property upgrade subsequential convergence to whole-sequence convergence.
 
 ## References
 
