@@ -159,7 +159,7 @@ L\|z^{r+1}-z^r\|.
 Combining the finitely many block estimates gives the claim. ∎
 
 ### KL Property
-Since $F$ is a polynomial, it satisfies the Kurdyka-Łojasiewicz property at every point. That is, near every stationary point $z^*$, there exist $\eta>0$, a neighborhood $U$, and a concave $C^1$ function $\varphi:(0,\eta)\to\mathbb R_+$, with $\varphi'>0$, such that
+Since $F$ is a polynomial, it satisfies the Kurdyka-Łojasiewicz property at every point. That is, near every stationary point $z^*$, there exist $\eta>0$, a neighborhood $U$, and a function $\varphi:[0,\eta)\to\mathbb R_+$ that is continuous on $[0,\eta)$, concave and $C^1$ on $(0,\eta)$, with $\varphi(0)=0$ and $\varphi'>0$ on $(0,\eta)$, such that
 
 $$\varphi'(F(z)-F(z^*))\|\nabla F(z)\|\ge1$$
 
@@ -201,7 +201,7 @@ Let $a=\mu/2$ and let $b>0$ be the constant from Lemma 4, so that
 
 $$s_r-s_{r+1}\ge a\Delta_r^2, \qquad \|\nabla F(z^r)\|\le b\Delta_{r-1},\qquad r\ge1.$$
 
-Since $z^*$ is an accumulation point, $s_r\to0$, and $\Delta_r\to0$, we may choose $N\ge1$ along a subsequence converging to $z^*$ such that
+Since $z^*$ is an accumulation point, $s_r\to0$, $\Delta_r\to0$, and $\varphi(s_r)\to\varphi(0)=0$, we may choose $N\ge1$ along a subsequence converging to $z^*$ such that
 
 $$s_N<\eta,\qquad
 \|z^N-z^*\|+\Delta_{N-1}+\frac{b}{a}\varphi(s_N)<\rho.$$
@@ -229,7 +229,7 @@ $$\Delta_r^2
 \Delta_{r-1}
 \left(\varphi(s_r)-\varphi(s_{r+1})\right).$$
 
-Using $2\sqrt{uv}\le u+v$, one obtains
+Taking square roots and applying $2\sqrt{uv}\le u+v$ (AM-GM) with $u=\Delta_{r-1}$ and $v=\tfrac{b}{a}(\varphi(s_r)-\varphi(s_{r+1}))$ gives
 
 $$2\Delta_r
 \le
@@ -238,23 +238,45 @@ $$2\Delta_r
 \frac{b}{a}
 \left(\varphi(s_r)-\varphi(s_{r+1})\right).$$
 
-Summing from $r=N$ to $M$,
+Summing from $r=N$ to $M$ and rearranging,
 
-$$\sum_{r=N}^M \Delta_r
+$$2\sum_{r=N}^M\Delta_r
+\le
+\sum_{r=N}^M\Delta_{r-1}
++
+\frac{b}{a}\sum_{r=N}^M\bigl(\varphi(s_r)-\varphi(s_{r+1})\bigr).$$
+
+The right-hand sum of $\Delta_{r-1}$ equals $\sum_{r=N-1}^{M-1}\Delta_r$, so subtracting $\sum_{r=N}^{M-1}\Delta_r$ from both sides leaves
+
+$$\sum_{r=N}^M\Delta_r+\Delta_M\le\Delta_{N-1}+\frac{b}{a}\bigl(\varphi(s_N)-\varphi(s_{M+1})\bigr).$$
+
+More usefully, the $\varphi$-sum telescopes to $\varphi(s_N)-\varphi(s_{M+1})\le\varphi(s_N)$ gives
+
+$$\sum_{r=N}^M \Delta_r + \Delta_M
 \le
 \Delta_{N-1}
 +
 \frac{b}{a}\varphi(s_N).$$
 
-Therefore,
+This bounds the total path length from $z^N$ onward by quantities fixed at step $N$. Applying the triangle inequality,
 
+$$\begin{aligned}
+\|z^{M+1} - z^*\|
+&\le \|z^N - z^*\| + \|z^{N+1} - z^N\| + \cdots + \|z^{M+1} - z^M\| \\
+&= \|z^N - z^*\| + \Delta_N + \cdots + \Delta_M \\
+&= \|z^N - z^*\| + \sum_{r=N}^M \Delta_r
+\end{aligned}$$
+
+So
 $$\|z^{M+1}-z^*\|
 \le
 \|z^N-z^*\|+\sum_{r=N}^M \Delta_r
+\le
+\|z^N-z^*\|+\Delta_{N-1}+\frac{b}{a}\varphi(s_N)
 <
-\rho.$$
+\rho,$$
 
-This proves the claim by induction. If $s_r=0$ for some $r\ge N$, then the sequence is constant afterward, as above; otherwise the preceding estimates hold for all $r\ge N$. Letting $M\to\infty$ gives
+where the last inequality uses exactly the choice of $N$ made above. Since $M$ is arbitrary, this proves the claim by induction. If $s_r=0$ for some $r\ge N$, then the sequence is constant afterward, as above; otherwise the preceding estimates hold for all $r\ge N$. Letting $M\to\infty$ gives
 
 $$\sum_{r=N}^\infty \Delta_r<\infty.$$
 
