@@ -7,7 +7,7 @@ TABLES = $(wildcard tables/*)
 all: $(PDFFILE)
 
 $(PDFFILE): $(TEXFILE) references.bib $(FIGURES) $(TABLES)
-	latexmk -pdf -interaction=nonstopmode $(TEXFILE)
+	latexmk -pdf -bibtex -interaction=nonstopmode $(TEXFILE)
 
 clean:
 	latexmk -C $(TEXFILE)

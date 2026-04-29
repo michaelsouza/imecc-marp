@@ -4,6 +4,8 @@
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 
 \graphicspath{{paper/figures/}{figures/}}
@@ -12,11 +14,13 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{definition}{Definition}
 \newtheorem{remark}{Remark}
+\newtheorem{assumption}{Assumption}
+\newtheorem{corollary}{Corollary}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 
 \title{Proximal Cyclic Block Coordinate Descent for Euclidean Graph Realization}
-\author{}
+\author{Michael Souza \and Carlile Lavor \and Mario Martinez}
 \date{}
 
 \begin{document}
@@ -37,7 +41,7 @@ We adopt the convention that $x(i)$ denotes the coordinate of vertex $i$.
 
 The problem was first explicitly formulated by Yemini~\cite{yemini1978} in the context of distributed sensor localization.  Saxe~\cite{saxe1979} later proved that the $K$-embeddability problem is strongly NP-complete for $K=1$ and strongly NP-hard for general $K>1$, establishing the computational difficulty of DGP even in low dimensions.
 
-Applications of DGP span molecular conformation~\cite{more1999}, sensor network localization, and graph drawing, which has renewed algorithmic interest in tractable continuous formulations.  A standard approach replaces the equality constraints by the quartic least-squares objective
+Applications of DGP are broad: molecular conformation and protein structure determination~\cite{crippen1988,more1999}, wireless sensor network localization~\cite{savvides2001}, multidimensional scaling~\cite{borgroenen2010}, and structural rigidity analysis~\cite{roth1981}; see~\cite{liberti2014} for a comprehensive survey.  This breadth has sustained algorithmic interest in tractable continuous formulations.  A standard approach replaces the equality constraints by the quartic least-squares objective
 \[
     f(x)=\sum_{\{i,j\}\in E}\bigl(\|x_i-x_j\|^2-d_{ij}^2\bigr)^2,
 \]
@@ -45,9 +49,9 @@ whose global minimizers with $f=0$ are exactly the realizations.  This reformula
 
 The same quartic loss is central in multidimensional scaling and molecular distance geometry.  Amaral et al.~\cite{amaral2022complexity} developed a high-order regularized coordinate-descent framework for smooth nonconvex box-constrained problems and applied it to such distance-geometry objectives, using low-dimensional point blocks and regularized Taylor models.  Classical convergence results for nonlinear block Gauss--Seidel and BCD methods often require structural assumptions such as uniqueness, pseudoconvexity, or special block geometry, while proximal variants can restore convergence under weaker assumptions~\cite{grippo2000convergence,tseng2001convergence,wright2015coordinate}.  Our aim is more specific: we study exact cyclic vertex updates for the anchored graph-realization objective, add a fixed quadratic proximal term, and isolate the nonunique-minimizer mechanism that can make the unregularized exact method cycle.
 
-For fixed \(K\), a natural coordinate-descent strategy updates one vertex at a time while keeping all others fixed.  This cyclic block-coordinate descent (BCD) scheme is attractive because each block subproblem has only \(K\) variables.  However, exact cyclic BCD may cycle without converging: when a block subproblem has nonunique minimizers, a legal but ``wrong'' choice can create a persistent tie-switching orbit that keeps the objective constant and the iterate step bounded away from zero.
+For fixed \(K\), a natural strategy updates one vertex at a time while keeping all others fixed — cyclic block-coordinate descent (BCD).  Each block subproblem has only \(K\) variables, but exact cyclic BCD may cycle: nonunique block minimizers allow a tie-switching orbit that keeps the objective constant and the step size bounded away from zero.
 
-We cure this defect by adding a proximal term to each block update.  The proximal parameter $\mu>0$ penalizes large moves from the current block value and supplies the sufficient-decrease estimate needed for the convergence proof.  The convergence argument follows the now-standard pattern for proximal alternating and descent methods based on sufficient decrease, a relative error estimate, and the Kurdyka--\L{}ojasiewicz (KL) property~\cite{attouch2010proximal,attouch2013convergence,bolte2014proximal}; the graph-specific work is to verify these ingredients for the one-anchor realization objective and the exact cyclic vertex update.
+Adding a proximal term $\frac{\mu}{2}\|y-x_i^{\text{cur}}\|^2$ to each block update resolves this.  The proximal parameter $\mu>0$ supplies a sufficient-decrease estimate, and the convergence argument then follows the standard pattern of proximal descent methods based on sufficient decrease, a relative error estimate, and the Kurdyka--\L{}ojasiewicz (KL) property~\cite{attouch2010proximal,attouch2013convergence,bolte2014proximal}.
 
 \paragraph{Contributions.}
 \begin{enumerate}
@@ -57,7 +61,7 @@ We cure this defect by adding a proximal term to each block update.  The proxima
     \item We report reproducible planar numerical experiments that illustrate the convergence behavior and the effect of~$\mu$ (Section~\ref{sec:experiments}).
 \end{enumerate}
 
-This paper is organized as follows.  In Sect.~\ref{sec:problem} we introduce the anchored \(K\)-dimensional DGP formulation and derive the block gradient.  In Sect.~\ref{sec:algorithm} we define the proximal cyclic BCD algorithm.  In Sect.~\ref{sec:convergence} we carry out the convergence analysis, establishing bounded level sets, sufficient descent, stationarity of accumulation points, and whole-sequence convergence via the KL property.  In Sect.~\ref{sec:experiments} we report planar numerical experiments illustrating the tie-cycle pathology and the effect of the proximal parameter.  Conclusions are given in Sect.~\ref{sec:conclusion}.
+Sections~\ref{sec:problem}--\ref{sec:experiments} address these contributions in order; conclusions follow in Sect.~\ref{sec:conclusion}.
 
 \section{Problem}
 \label{sec:problem}
@@ -139,10 +143,55 @@ where \(F_i(y;z)\) denotes the objective \(F\) evaluated with block \(i\) replac
 
 Each block subproblem has at least one solution: it is continuous and coercive in \(y\), because of the proximal term \(\frac{\mu}{2}\|y-x_i^{r,\kappa-1}\|^2\).
 
+\begin{algorithm}[ht]
+\caption{Proximal Cyclic Block Coordinate Descent for Anchored Graph Realization}
+\label{alg:prox-bcd}
+\begin{algorithmic}[1]
+\Require Connected graph $G=(V,E)$, distances $\{d_{ij}\}$, dimension $K\ge1$, proximal parameter $\mu>0$, initial free coordinates $z^0=(x_2^0,\ldots,x_n^0)\in(\mathbb{R}^K)^{n-1}$, maximum sweeps $R$, tolerance $\varepsilon>0$.
+\Ensure Approximate stationary point: the returned iterate satisfies $\|\nabla_z F(z^{r+1})\|\le\varepsilon$ or $r+1=R$.
+\State Fix $x_1 \leftarrow 0\in\mathbb{R}^K$ (anchor).
+\For{$r = 0, 1, \ldots, R-1$}
+    \State $z^{r,0} \leftarrow z^r$
+    \For{$\kappa = 1, \ldots, n-1$}  \Comment{one cyclic sweep}
+        \State $i_\kappa \leftarrow \kappa+1$
+        \State $x_{i_\kappa}^{r,\kappa} \leftarrow \displaystyle\argmin_{y\in\mathbb{R}^K}\left\{F_{i_\kappa}(y;\,z^{r,\kappa-1})+\frac{\mu}{2}\|y-x_{i_\kappa}^{r,\kappa-1}\|^2\right\}$
+        \State $z^{r,\kappa} \leftarrow (x_2^{r,\kappa},\ldots,x_n^{r,\kappa})$ \Comment{only block $i_\kappa$ updated}
+    \EndFor
+    \State $z^{r+1} \leftarrow z^{r,n-1}$
+    \If{$\|\nabla_z F(z^{r+1})\| \le \varepsilon$} \textbf{break} \EndIf
+\EndFor
+\State \Return $z^{r+1}$
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Complexity.}
+Each block subproblem touches only the $\deg(i_\kappa)$ edge terms incident to vertex $i_\kappa$.  Assembling the block gradient costs $O(\deg(i_\kappa)\cdot K)$ operations; assembling the $K\times K$ Hessian costs $O(\deg(i_\kappa)\cdot K^2)$.  One full sweep therefore costs $O(|E|\cdot K^2)$ for assembly plus $O(n\cdot K^3)$ for the $n-1$ block linear solves per sweep.  Since $K$ is treated as a fixed small constant ($K\in\{2,3\}$ in practice), the dominant per-sweep cost is $O(|E|)$, and the total cost over $R$ sweeps with at most $T_{\mathrm{Newton}}$ Newton steps per block is $O(R\cdot T_{\mathrm{Newton}}\cdot(|E|K^2+nK^3))$.
+
+
 \section{Convergence Analysis}
 \label{sec:convergence}
 
-\begin{lemma}[Bounded level sets]
+The analysis rests on the following standing assumptions.  Assumptions~\ref{ass:connected}--\ref{ass:mu} are instance and parameter conditions satisfied by all experiments in this paper; Assumption~\ref{ass:exact} is an algorithmic idealization discussed after the list.
+
+\begin{assumption}[Graph connectivity]\label{ass:connected}
+$G=(V,E)$ is a connected simple graph.
+\end{assumption}
+
+\begin{assumption}[Single anchor]\label{ass:anchor}
+Vertex $x_1=0\in\mathbb{R}^K$ is fixed, and all remaining vertices $x_2,\ldots,x_n$ are free.
+\end{assumption}
+
+\begin{assumption}[Positive proximal parameter]\label{ass:mu}
+The proximal parameter satisfies $\mu>0$.
+\end{assumption}
+
+\begin{assumption}[Exact block minimization]\label{ass:exact}
+At each inner step, a global minimizer of the proximal block subproblem is selected.
+\end{assumption}
+
+Assumption~\ref{ass:connected} is needed for bounded level sets (Lemma~\ref{lem:bounded}).  Assumption~\ref{ass:mu} ensures coercivity of each subproblem (existence of solutions) and supplies the sufficient-decrease constant.  Assumption~\ref{ass:exact} is the standard hypothesis for BCD convergence theory; in practice it is approximated by running a Newton solver to high accuracy inside each block update.
+
+\begin{lemma}[Bounded level sets (Assumption~\ref{ass:connected})]\label{lem:bounded}
 For every \(\alpha\ge0\), the anchored sublevel set
 \[
     \{z:F(z)\le \alpha\}
@@ -203,17 +252,17 @@ Summing over \(\kappa=1,\ldots,m\) gives
 \]
 because each free block is updated once per sweep.
 
-Since \(F\ge0\), the sequence \(\{F(z^r)\}\) is monotonically nonincreasing and bounded below, so it converges to some \(\bar F\ge0\).  Summing the descent inequality from \(r=0\) to \(m\) yields
+Since \(F\ge0\), the sequence \(\{F(z^r)\}\) is monotonically nonincreasing and bounded below, so it converges to some \(\bar F\ge0\).  Summing the descent inequality from \(r=0\) to any \(M\ge0\) yields
 \[
     \frac{\mu}{2}
-    \sum_{r=0}^{m}
+    \sum_{r=0}^{M}
     \|z^{r+1}-z^r\|^2
     \le
-    F(z^0)-F(z^{m+1})
+    F(z^0)-F(z^{M+1})
     \le
     F(z^0).
 \]
-Letting \(m\to\infty\) proves square summability, and therefore \(\|z^{r+1}-z^r\|\to0\).
+Letting \(M\to\infty\) proves square summability, and therefore \(\|z^{r+1}-z^r\|\to0\).
 \end{proof}
 
 \begin{lemma}[Stationarity of accumulation points]
@@ -291,13 +340,13 @@ whenever
 \end{definition}
 
 \begin{remark}
-Every polynomial satisfies the KL property at each of its points; see~\cite{attouch2013convergence,bolte2014proximal} and the references therein.  Since \(F\) is a polynomial, it satisfies the KL property at every point, and in particular at every stationary point of the anchored problem.  We use this fact without proof.
+Since \(F\) is a polynomial, it satisfies the KL property at every point~\cite{attouch2013convergence,bolte2014proximal}, and in particular at every stationary point of the anchored problem.
 \end{remark}
 
 The next result is a direct application of the standard KL finite-length argument for descent methods.  We include the proof to make explicit how the one-anchor boundedness, exact proximal block optimality, and relative-error estimate enter in the present graph-realization setting.
 
 \begin{theorem}[Whole-sequence convergence]
-For any fixed \(K\ge1\), the proximal cyclic BCD sequence \(\{z^r\}\) converges to a stationary point \(z^*\) of the anchored problem in \(\mathbb R^K\).  Moreover,
+For any fixed \(K\ge1\), the proximal cyclic BCD sequence \(\{z^r\}\subset\mathbb R^{K(n-1)}\) converges to a stationary point \(z^*\) of the anchored problem.  Moreover,
 \[
     \sum_{r=0}^{\infty}\|z^{r+1}-z^r\|<\infty.
 \]
@@ -404,10 +453,17 @@ Thus \(\{z^r\}\) is Cauchy and converges to some \(\bar z\).  Since the subseque
 For the flattened sequence of intermediate block updates, note that all intermediate points in sweep \(r\) are within distance at most \(\Delta_r\) of \(z^r\).  Since \(z^r\to z^*\) and \(\Delta_r\to0\), the flattened sequence also converges to \(z^*\).
 \end{proof}
 
+\begin{remark}
+The standard KL theory~\cite{attouch2013convergence} further classifies the rate of convergence by the KL exponent $\theta\in[0,1)$ of $F$ at $z^*$: finite termination for $\theta=0$, R-linear convergence for $\theta\in(0,\frac12]$, and sublinear otherwise.  Since the exponent depends on the local geometry of the stationary point and is not determined here, we make no quantitative rate claim; the experiments in Section~\ref{subsec:random} illustrate the observed decay.
+\end{remark}
+
 \section{Numerical Experiments}
 \label{sec:experiments}
 
 All experiments are planar (\(K=2\)).  Each block subproblem is solved by a damped Newton method with backtracking line search; a new point is accepted only if it does not increase the proximal block objective, so the sufficient-decrease property holds in exact arithmetic.  The reported computations are therefore illustrative finite-precision realizations of the scheme analyzed in Sect.~\ref{sec:convergence}, which assumes exact block minimization.
+
+\paragraph{Implementation details.}
+The code is written in pure Python (standard library \texttt{random} module and NumPy, no compiled extensions).  The Newton solver uses at most 80 inner iterations with Armijo step acceptance; a fallback gradient step is used if the Hessian is indefinite.  The target instance is generated with seed \texttt{20260429}; the initial iterate for run $k$ of parameter $\mu$ uses seed $1000+\lfloor100\mu\rfloor+k$, with free coordinates drawn uniformly from $[-1.5,1.5]^2$.  Experiments were run on a laptop with an Intel Core i7-12700H CPU; a single run of 220 sweeps on the $n=14$ instance completes in under 2 seconds.
 
 \subsection{A tie cycle without the proximal term}
 \label{subsec:cycle}
@@ -454,9 +510,9 @@ since the proximal term vanishes at the current value \(U\) and is strictly posi
 \subsection{Proximal BCD on a random geometric instance}
 \label{subsec:random}
 
-We assess the practical behavior of Algorithm~\ref{sec:algorithm} on a planted random geometric instance with \(n=14\) vertices.  Target positions are drawn uniformly in \([0,1]^2\) with \(x_1=(0,0)\) serving as the single anchor.  The graph is constructed as the symmetrized \(4\)-nearest-neighbor graph, augmented with the minimum number of edges needed to guarantee connectivity; the resulting instance has \(36\) edges and minimum degree \(4\).  Prescribed distances are the Euclidean distances of the target positions.
+We assess the practical behavior of Algorithm~\ref{alg:prox-bcd} on a planted random geometric instance with \(n=14\) vertices.  Target positions are drawn uniformly from \([-1.15,1.15]^2\), with \(x_1\) fixed at the origin as the single anchor.  The graph is constructed as the symmetrized \(4\)-nearest-neighbor graph, augmented with the minimum number of edges needed to guarantee connectivity; the resulting instance has \(36\) edges and minimum degree \(4\).  Prescribed distances are the Euclidean distances of the target positions.
 
-For each value of the proximal parameter \(\mu\in\{0.05,0.20,1.00\}\), we ran eight independent random starts for at most \(220\) sweeps.  A run is declared successful if the final free-gradient norm satisfies \(\|\nabla_z F(z^r)\|\le10^{-6}\).  A nonzero final objective value is not considered a failure: the theorem guarantees convergence to a stationary point, which need not be a global minimizer.  Results are summarized in Table~\ref{tab:proximal}.
+For each value of the proximal parameter \(\mu\in\{0.05,0.20,1.00\}\), we ran eight independent random starts for at most \(220\) sweeps.  A run is declared successful if the final free-gradient norm satisfies \(\|\nabla_z F(z^r)\|\le10^{-6}\).  A nonzero final objective value is not considered a failure: the theorem guarantees convergence to a stationary point, which need not be a global minimizer.  Table~\ref{tab:proximal} reports, for each~$\mu$, the number of successful runs and the median terminal sweep count, median final objective, median gradient norm, and median sweep-step size, all computed over all eight runs (including runs that hit the 220-sweep cap without satisfying the gradient criterion).
 
 \begin{table}[ht]
 \centering
@@ -476,7 +532,7 @@ Figure~\ref{fig:history} shows the evolution of the objective value, the free-gr
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.82\linewidth]{final_embedding.pdf}
+\includegraphics[width=0.6\linewidth]{final_embedding.pdf}
 \caption{Planted target realization (circles) and final proximal BCD iterate (crosses) for the low-objective run with \(\mu=0.20\), after optimal orthogonal alignment fixing \(x_1\).}
 \label{fig:embedding}
 \end{figure}
@@ -486,13 +542,10 @@ Figure~\ref{fig:history} shows the evolution of the objective value, the free-gr
 \section{Conclusion}
 \label{sec:conclusion}
 
-The proximal term supplies the missing sufficient-decrease estimate
-\[
-    F(z^r)-F(z^{r+1})
-    \ge
-    \frac{\mu}{2}\|z^{r+1}-z^r\|^2,
-\]
-which rules out the tie-cycle behavior that can occur in exact cyclic block minimization without regularization.  Together with bounded anchored level sets, a relative error estimate, and the polynomial KL property, this yields convergence of the whole proximal cyclic BCD sequence to a stationary point in any fixed Euclidean dimension \(K\ge1\).
+The proximal term supplies the sufficient-decrease estimate of Lemma~2, which rules out the tie-cycle behavior of exact cyclic BCD.  Together with bounded anchored level sets, a relative error estimate, and the polynomial KL property, this yields whole-sequence convergence to a stationary point in any fixed dimension \(K\ge1\).
+
+\paragraph{Limitations and scope.}
+Several aspects of the framework remain open.  First, the theorem guarantees stationarity but not global optimality: the proximal method may converge to local minima or saddle points, as in any non-convex first-order scheme.  Second, the exact block minimization assumption (Assumption~\ref{ass:exact}) is an idealization; convergence under inexact but sufficiently accurate block solves (e.g., via the inexact proximal BCD framework of~\cite{tseng2001convergence}) is a natural extension.  Third, the experiments are limited to planar instances ($K=2$) with at most $n=14$ vertices; scaling to three-dimensional molecular conformations with hundreds of vertices may require a warm-started or sparse Newton solver.  Fourth, we study only the quartic least-squares objective; distance-geometry formulations based on semidefinite relaxation or stress functions~\cite{more1999} are not covered.  Addressing these directions is left for future work.
 
 \bibliographystyle{plain}
 \bibliography{references}
