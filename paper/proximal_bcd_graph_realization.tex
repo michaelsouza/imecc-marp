@@ -20,7 +20,6 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 
 \title{Convergence of Proximal Cyclic Block Coordinate Descent for Euclidean Graph Realization}
-\author{Michael Souza \and Carlile Lavor \and Mario Martinez}
 \date{}
 
 \begin{document}
@@ -163,10 +162,6 @@ Each block subproblem has at least one solution: it is continuous and coercive i
 \State \Return $z^{r+1}$
 \end{algorithmic}
 \end{algorithm}
-
-\paragraph{Complexity.}
-Each block subproblem touches only the $\deg(i_\kappa)$ edge terms incident to vertex $i_\kappa$.  Assembling the block gradient costs $O(\deg(i_\kappa)\cdot K)$ operations; assembling the $K\times K$ Hessian costs $O(\deg(i_\kappa)\cdot K^2)$.  One full sweep therefore costs $O(|E|\cdot K^2)$ for assembly plus $O(n\cdot K^3)$ for the $n-1$ block linear solves per sweep.  Since $K$ is treated as a fixed small constant ($K\in\{2,3\}$ in practice), the dominant per-sweep cost is $O(|E|)$, and the total cost over $R$ sweeps with at most $T_{\mathrm{Newton}}$ Newton steps per block is $O(R\cdot T_{\mathrm{Newton}}\cdot(|E|K^2+nK^3))$.
-
 
 \section{Convergence Analysis}
 \label{sec:convergence}
